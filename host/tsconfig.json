@@ -1,0 +1,20 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "outFile": "./compiled.jsx",
+    "allowJs": true,
+    "noLib": true,
+    "module": "commonjs",
+    "types": [
+      "types-for-adobe/illustrator/2015.3"
+    ]
+  },
+//  "files": [
+//    "script.ts"
+//  ],
+  "exclude": [
+    "node_modules",
+    "client",
+    "universal"
+  ]
+}

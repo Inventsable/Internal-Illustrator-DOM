@@ -1,0 +1,75 @@
+<package>
+  <classdef name="ScreenMode" enumeration="true">
+    <shortdesc>The screen mode.</shortdesc>
+    <elements type="class">
+      <property name="MULTIWINDOW" rwaccess="readonly">
+        <shortdesc>Display multiple windows.</shortdesc>
+        <datatype>
+          <type>int</type>
+          <value>1</value>
+        </datatype>
+      </property>
+      <property name="DESKTOP" rwaccess="readonly">
+        <shortdesc>Full screen with menu bar.</shortdesc>
+        <datatype>
+          <type>int</type>
+          <value>2</value>
+        </datatype>
+      </property>
+      <property name="FULLSCREEN" rwaccess="readonly">
+        <shortdesc>Full screen without menu bar.</shortdesc>
+        <datatype>
+          <type>int</type>
+          <value>3</value>
+        </datatype>
+      </property>
+    </elements>
+  </classdef>
+  <classdef name="ColorType" enumeration="true">
+    <shortdesc>The color model.</shortdesc>
+    <elements type="class">
+      <property name="None" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>6</value>
+        </datatype>
+      </property>
+      <property name="CMYK" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>1</value>
+        </datatype>
+      </property>
+      <property name="GRAY" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>0</value>
+        </datatype>
+      </property>
+      <property name="RGB" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>5</value>
+        </datatype>
+      </property>
+      <property name="SPOT" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>3</value>
+        </datatype>
+      </property>
+      <property name="PATTERN" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>2</value>
+        </datatype>
+      </property>
+      <property name="GRADIENT" rwaccess="readonly">
+        <datatype>
+          <type>int</type>
+          <value>4</value>
+        </datatype>
+      </property>
+    </elements>
+  </classdef>
+</package>

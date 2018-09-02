@@ -1,0 +1,22 @@
+{
+    "compileOnSave": true,      // Top level option
+    "compilerOptions": {
+        "outFile": "./compiled.js",  // file to target for Process Palette
+        "allowJs": true,            // Allows JavaScript files to be compiled.
+        "lib": [                    // Specifying "lib" overwrites defaults (stops import of HTML DOM stuff).
+            "es5"
+        ],
+        "strict": true,             // Shorthand for the following four options:
+        // "noImplicitAny": true,
+        // "noImplicitThis": true,
+        // "alwaysStrict": true,
+        // "strictNullChecks": true,
+          "target": "es3"             // In case TypeScript is used, this will compile to ECMAScript 3 (ExtendScript!) compatible code.
+    },
+    "files": [
+      "main.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+}
