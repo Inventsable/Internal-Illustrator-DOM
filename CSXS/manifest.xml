@@ -33,16 +33,16 @@
           <Menu>Sourcerer</Menu>
           <Geometry>
             <Size>
-              <Height>100</Height>
-              <Width>104</Width>
+              <Height>400</Height>
+              <Width>300</Width>
             </Size>
             <MaxSize>
-              <Height>280</Height>
-              <Width>150</Width>
+              <Height>900</Height>
+              <Width>800</Width>
             </MaxSize>
             <MinSize>
-              <Height>280</Height>
-              <Width>104</Width>
+              <Height>200</Height>
+              <Width>200</Width>
             </MinSize>
           </Geometry>
           <Icons>

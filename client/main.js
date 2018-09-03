@@ -16,12 +16,12 @@ source.package = new dom().parseFromString(source.package[0].toString());
 
 var classes = xpath.select("//classdef", source.package);
 classes.forEach(function(v,i,a){
-  getProperties(v);
+  getProperties(v, i);
 })
 console.log(xdom);
 
 
-function getProperties(classdef) {
+function getProperties(classdef, index) {
   var reflect = {
     props: [],
     desc: {},
@@ -43,7 +43,8 @@ function getProperties(classdef) {
   reflect.elements = xpath.select("//elements", xdomclass);
   // console.log(reflect.elements);
   reflect.elements = reflect.elements[0];
-  console.log(reflect.elements);
+  reflect.key = index;
+  // console.log(reflect.elements);
   reflect.elements.attr = getAttributes(reflect.elements);
   reflect.elements.properties = xpath.select("//property", reflect.elements)
   reflect.props = [];
@@ -63,8 +64,8 @@ function getProperties(classdef) {
         obj.datatype.type = strReplace(desc[0], '<type>')
       }
       if (/<value>[\s\S]*?<\/value>/gm.test(propStr)) {
-        var desc = propStr.match(/<value>[\s\S]*?(?=<\/value>)/gm);
-        obj.datatype.value = strReplace(desc[0], '<value>')
+        var val = propStr.match(/<value>[\s\S]*?(?=<\/value>)/gm);
+        obj.datatype.value = strReplace(val[0], '<value>')
       }
       obj.attrList.push(reflect.elements.properties[e].attributes[u].name);
     }
@@ -96,10 +97,245 @@ function hasDescription(source) {
 }
 
 
-var app = new Vue({
+var testDOM = {
+  testClass : {
+    kind: "class",
+    desc: "Dynamic object used to create data-driven graphics.",
+    dynamic: "true",
+    name: "Variable",
+    props : [
+      {
+        attrList : ["name", "rwaccess"],
+        datatype : {
+          type : "int",
+          value : 1
+        },
+        desc: "The object's container",
+        name: "parent",
+        kind: "property",
+        rwaccess: "readonly"
+      },
+      {
+        attrList : ["name", "rwaccess"],
+        datatype : {
+          type : "int",
+          value : 1
+        },
+        desc: "The classname of the object",
+        name: "typename",
+        kind: "property",
+        rwaccess: "readonly"
+      },
+
+  ]
+  }
+};
+
+
+Vue.component('selector', {
+  template: `
+    <div class="selectLine">
+      <div class="selectPrefix">
+        <div :class="(this.toggle.isSelect) ? 'xtag-select-active' : 'xtag-select-idle'" @click="setActive('select')">
+          <span class="adobe-icon-cursor"></span>
+        </div>
+        <div :class="(this.toggle.isFind) ? 'xtag-find-active' : 'xtag-find-idle'" @click="setActive('find')">
+          <span class="adobe-icon-find"></span>
+        </div>
+        <input :class="(toggle.isActive) ? 'select-input-active' : 'select-input-idle'" type="text" v-model="msg">
+      </div>
+      <div class="selectSuffix">
+        <div :class="(this.isPlus) ? 'xtag-plus-active' : 'xtag-plus-idle'" @click="setFavorite('plus')">
+          <span class="adobe-icon-plus"></span>
+        </div>
+      </div>
+    </div>
+  `,
+  data() {
+    return {
+      msg: 'app.selection',
+      toggleList : ['isActive', 'isSelect', 'isFind'],
+      // toggle : [
+      //   {isActive: false,
+      //   {isSelect: true},
+      //   {isFind: false},
+      // ]
+      toggle : {
+        isActive: false,
+        isSelect: false,
+        isFind: false,
+      },
+      isPlus: false,
+    }
+  },
+  methods : {
+    setFavorite: function(lower) {
+      // console.log(this.msg);
+      var upper = lower.charAt(0).toUpperCase() + lower.substr(1);
+      this.isPlus = !this.isPlus;
+      if (this.isPlus)
+        changeCSSVar('colorPlusIcon', getCSSVar('colorPlusActive'))
+      else
+        changeCSSVar('colorPlusIcon', getCSSVar('colorPlusIdle'))
+      console.log(this.isPlus);
+      console.log(getCSSVar('colorNoteIcon'));
+    },
+    setActive : function(lower) {
+      var upper = lower.charAt(0).toUpperCase() + lower.substr(1);
+      var lock = '';
+      for (var m = 0; m < this.toggleList.length; m++) {
+        var select = this.toggleList[m];
+        if (select !== 'is' + upper) {
+          this.toggle[select] = false;
+        } else {
+          this.toggle[select] = !this.toggle[select];
+          lock = upper;
+          if (this.toggle[select])
+            changeCSSVar('color' + upper + 'Icon', getCSSVar('color' + upper + 'Active'))
+          else
+            changeCSSVar('color' + upper + 'Icon', getCSSVar('color' + upper + 'Idle'))
+        }
+      }
+      for (var n = 0; n < this.toggleList.length; n++) {
+        var select = trimL(this.toggleList[n], 2);
+        if (select !== lock) {
+          // console.log('matching ' + select);
+          changeCSSVar('color' + select + 'Icon', '#a1a1a1')
+        }
+      }
+      // console.log(upper + ' is ' + this.toggle['is' + upper]);
+      // console.log(getCSSVar('color' + upper + 'Active'));
+      // console.log(getCSSVar('color' + upper + 'Idle'));
+      // console.log(getCSSVar('color' + upper + 'Icon'));
+    }
+  }
+})
+
+
+Vue.component('classdeflist', {
+  template: `
+    <ul @click="toggleDetails">
+      <classdef v-for="classdef in omv" :key="classdef.key" :label="classdef.name" :kind="classdef.kind"></classdef>
+      <detaillist v-if="hasDetails"></detaillist>
+    </ul>
+  `,
+  methods: {
+    toggleDetails: function() {
+      console.log(this.hasDetails);
+      this.hasDetails = !this.hasDetails;
+    }
+  },
+  data() {
+    return {
+      hasDetails: false,
+      omv : testDOM
+      // omv : {
+      //   classdef : {
+      //     key: 0,
+      //     desc: "Dynamic object used to create data-driven graphics.",
+      //     dynamic: "true",
+      //     name: "Variable",
+      //     props : [
+      //       {attrList : ["name", "rwaccess"],
+      //       datatype : {
+      //         type : "int",
+      //         value : 1
+      //       },
+      //       desc: "The object's container",
+      //       name: "parent",
+      //       rwaccess: "readonly"}
+      //     ]
+      //   }
+      // }
+    }
+  }
+})
+
+Vue.component('classdef', {
+  props: ['label', 'kind'],
+  template: `
+  <div class="slot" @mouseover="hoverThis(kind)" @mouseout="returnThis(kind)">
+    <div class="slot-prefix">
+      <div :class="'xtag-' + kind">{{kind.charAt(0)}}</div>
+      <div class="xtype" v-text="kind"></div>
+      <div class="xdesc"> {{ label }} </div>
+    </div>
+    <div class="slot-suffix">
+      <div class="xpreview"></div>
+      <div class="xetc">...</div>
+      <div class="xpath">
+        <span class="adobe-icon-angleDown"></span>
+      </div>
+    </div>
+  </div>
+  `,
+  methods : {
+    hoverThis : function(kind) {
+      changeCSSVar('colorTag' + kind, 1)
+    },
+    returnThis : function(kind) {
+      changeCSSVar('colorTag' + kind, 0.5)
+    },
+  },
+  data() {
+    return {
+      showDetails : true,
+    }
+  }
+})
+
+Vue.component('detaillist', {
+  // props:['propList'],
+  template: `
+    <div class="xdetail">
+      <detail v-for="prop in propList" :key="prop.key" :label="prop.desc" :kind="prop.kind"></detail>
+    </div>
+  `,
+  data() {
+    return {
+      propList : testDOM.testClass.props
+    }
+  }
+})
+
+Vue.component('detail', {
+  props: ['kind'],
+  template: `
+    <div class="in-slot">
+      <div class="slot-prefix">
+        <div class="xtab"></div>
+        <div :class="'xtag-' + kind">{{kind.charAt(0)}}</div>
+        <div class="xtype" v-text="kind"></div>
+        <div class="xdesc"> placeholder </div>
+      </div>
+      <div class="slot-suffix">
+        <div class="xpreview"></div>
+        <div class="xpath">
+          <span class="adobe-icon-angleDown"></span>
+        </div>
+      </div>
+    </div>
+  `,
+  data() {
+    return {
+
+    }
+  }
+})
+
+
+var src = new Vue({
   el: '#app',
   data : {
-    text : '',
+    // OMV : xdom,
+    OMV : testDOM
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      for (let [key, value] of Object.entries(this.OMV)) {
+        // console.log(this.OMV[key].name);
+      }
+    })
   },
   computed : {
 

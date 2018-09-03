@@ -20,6 +20,10 @@ function changeCSSVar(prop, data){
   document.documentElement.style.setProperty('--' + prop, data);
 }
 
+function getCSSVar(prop) {
+  return window.getComputedStyle(document.documentElement).getPropertyValue('--' + prop);
+}
+
 function deleteChildren(parent){
   while(parent.firstChild){
       parent.removeChild(parent.firstChild);

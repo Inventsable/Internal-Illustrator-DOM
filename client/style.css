@@ -1,1 +1,382 @@
-/* none */
+html {
+  font-family: Rubik, sans-serif;
+  --shadowBoxLight: drop-shadow(0rem .2rem .25rem rgba(0,0,0,0.0));
+  --shadowBoxDark: drop-shadow(0rem .4rem .3125rem rgba(0,0,0,0.3125));
+  --shadowLight: 0rem .2rem .125rem rgba(0,0,0,0.125);
+  --shadowDark: 0rem .4rem .3125rem rgba(0,0,0,0.3125);
+  --borderRad: .4rem;
+
+  --colorSelectBG: rgba(255, 255, 255, 0.0625);
+  --colorSelectBGActive: #314356;
+  --colorSelectIdle: #a1a1a1;
+  --colorSelectActive: #61AFEF;
+
+  --colorNoteBG: rgba(255, 255, 255, 0.0625);
+  --colorNoteBGActive: #4B363D;
+  --colorNoteIdle: #a1a1a1;
+  --colorNoteActive: #E06C75;
+
+  --colorPlusBG: rgba(255, 255, 255, 0.0625);
+  --colorPlusBGActive: #384C2B;
+  --colorPlusIdle: #a1a1a1;
+  --colorPlusActive: #5FA035;
+
+  --colorFindBG: rgba(255, 255, 255, 0.0625);
+  --colorFindBGActive: #4C463F;
+  --colorFindIdle: #a1a1a1;
+  --colorFindActive: #E5C07B;
+
+  --padding: .4rem;
+  --colorSlotBG: #252830;
+  --colorTagClass: #4C463F;
+  --colorFontClass: #E5C07B;
+  --colorTagVar: #4B363D;
+  --colorFontVar: #E06C75;
+  --colorTagProperty: #40444C;
+  --colorFontProperty: #ABB2BF;
+  --colorTagMethod: #314356;
+  --colorFontMethod: #61AFEF;
+}
+
+.slot {
+  position: relative;
+  /* -webkit-filter: var(--shadowBoxLight); */
+  text-shadow: var(--shadowLight);
+  transition:  text-shadow 50ms var(--quart) 0ms,
+                box-shadow 50ms var(--quart) 0ms,
+         background-color 100ms var(--quad)  50ms;
+  background-color: var(--colorHover);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.slot:hover {
+  text-shadow: var(--shadowDark);
+  /* -webkit-filter: var(--shadowBoxDark); */
+}
+
+.in-slot {
+  position: relative;
+  /* -webkit-filter: var(--shadowBoxLight); */
+  text-shadow: var(--shadowLight);
+  transition:  text-shadow 50ms var(--quart) 0ms,
+                box-shadow 50ms var(--quart) 0ms,
+         background-color 100ms var(--quad)  50ms;
+  background-color: var(--colorHover);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.in-slot:hover {
+  text-shadow: var(--shadowDark);
+  -webkit-filter: var(--shadowBoxDark);
+}
+
+/* .slot-Active, .slot:hover {
+  background-color: rgba(255, 255, 255, 0.065);
+} */
+
+/* .slot:hover > .xtag, .slot:hover > .xpath {
+  background-color: rgba(255, 255, 255, 0.13);
+} */
+
+.slot-prefix {
+  display: flex;
+  justify-content: flex-start;
+  /* width: calc(100% - 2rem); */
+}
+
+.slot-suffix {
+  display: flex;
+  justify-content: flex-end;
+  width: 2rem;
+}
+
+[class^="xtag"] {
+  transition: background-color 100ms var(--quad)  50ms,
+                         color 100ms var(--quad)  50ms;
+  position: relative;
+  box-sizing: border-box;
+  font-weight: 700;
+  padding: calc(var(--padding) + .14rem) calc(var(--padding) * 2) var(--padding) calc(var(--padding) * 2);
+  /* background-color: rgba(255, 255, 255, 0.065); */
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+  /* border: 2px solid blue; */
+}
+
+.xtag-property {
+  background-color: var(--colorTagProperty);
+  color: var(--colorFontProperty);
+}
+
+.xplaceholder {
+  /* width: auto; */
+  background-color: var(--colorTagProperty);
+  /* color: var(--colorFontProperty); */
+}
+
+[class^="xtag-select"] {
+  text-shadow: var(--shadowLight);
+  padding: 0rem calc(var(--padding) * 2) 0rem calc(var(--padding) * 2);
+  font-size: 2rem;
+  border-radius: var(--borderRad) 0rem 0rem 0rem;
+  color: var(--colorFontProperty);
+  cursor: pointer;
+}
+
+[class^="xtag-find"] {
+  text-shadow: var(--shadowLight);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0rem calc(var(--padding) * 2) 0rem calc(var(--padding) * 2);
+  height: 2.0rem;
+  font-size: 1.3rem;
+  /* color: var(--colorFontProperty); */
+  cursor: pointer;
+}
+
+[class^="xtag-note"] {
+  text-shadow: var(--shadowLight);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0rem var(--borderRad) 0rem 0rem;
+  padding: 0rem calc(var(--padding) * 2) 0rem calc(var(--padding) * 2);
+  height: 2.0rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+[class^="xtag-plus"] {
+  text-shadow: var(--shadowLight);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0rem var(--borderRad) 0rem 0rem;
+  padding: 0rem calc(var(--padding) * 2) 0rem calc(var(--padding) * 2);
+  height: 2.0rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.xtag-select-active {
+  background-color: var(--colorSelectBGActive);
+}
+
+.xtag-select-idle {
+  background-color: var(--colorSelectBG);
+}
+
+.xtag-find-idle {
+  background-color: var(--colorFindBG);
+}
+
+.xtag-find-active {
+  background-color: var(--colorFindBGActive);
+}
+
+
+.xtag-plus-idle {
+  background-color: var(--colorPlusBG);
+}
+
+.xtag-plus-active {
+  background-color: var(--colorPlusBGActive);
+}
+
+.xtag-note-idle {
+  background-color: var(--colorNoteBG);
+}
+
+.xtag-note-active {
+  background-color: var(--colorNoteBGActive);
+}
+
+
+
+.xtag-method {
+  background-color: var(--colorTagMethod);
+  color: var(--colorFontMethod);
+}
+
+.xtag-variable {
+  background-color: var(--colorTagVar);
+  color: var(--colorFontVar);
+}
+
+.xdetail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.xtab {
+  position: relative;
+  box-sizing: border-box;
+  /* font-weight: 700; */
+  padding: calc(var(--padding) + .14rem) calc(var(--padding) * 2) var(--padding) calc(var(--padding) * 2);
+  background-color: var(--colorPanelBG);
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+  /* border: 2px solid blue; */
+}
+
+.xtag-class {
+  background-color: var(--colorTagClass);
+  color: var(--colorFontClass);
+}
+
+.xtype {
+  padding: calc(var(--padding) + .18rem) var(--padding) var(--padding) 0rem;
+  width: 4.5rem;
+  opacity: .5;
+  background-color: transparent;
+  /* border: 2px solid blue; */
+  display: flex;
+  justify-content: flex-end;
+}
+
+.xetc {
+  user-select: none;
+  cursor: pointer;
+  padding: calc(var(--padding) - .18rem) var(--padding) var(--padding) 0rem;
+  width: 1rem;
+  opacity: .5;
+  font-size: 1.5rem;
+  background-color: transparent;
+  /* border: 2px solid blue; */
+  display: flex;
+  justify-content: flex-end;
+}
+
+.xpreview {
+  font-size: 1.25rem;
+  padding: calc(var(--padding) + .02rem) var(--padding) var(--padding) var(--padding);
+  background-color: transparent;
+  /* border: 2px solid green; */
+}
+
+.selectLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: .5rem;
+  /* outline: 1.35px solid red; */
+  /* border-radius: .25rem .25rem 0px 0px; */
+  /* background-color: var(--colorInputIdle); */
+  /* border: 2px solid blue; */
+}
+
+.selectPrefix {
+  display: flex;
+  justify-content: flex-start;
+  /* width: 100%; */
+  width: calc(100% - 2rem);
+}
+
+.selectSuffix {
+  display: flex;
+  justify-content: flex-end;
+  width: 2rem;
+}
+
+[class^="select-input"] {
+  padding: 0rem var(--padding) 0rem calc(var(--padding)*2);
+  /* background-color: var(--colorInputIdle); */
+  display: flex;
+  color: var(--colorFont);
+  flex-wrap: wrap;
+  border-style: solid;
+  border-width: 0px;
+  /* border-radius: 2px 2px 2px 2px; */
+  /* padding: .25rem .5rem; */
+  height: 2.0rem;
+  width: 100%;
+
+  /* width: calc(100% - 4rem); */
+  /* margin: .75rem 0rem .5rem 0rem; */
+}
+
+.select-btn {
+  /* border: 2px solid red; */
+  font-size: 2rem;
+  padding-top: .15rem;
+}
+
+
+.select-input-idle:focus {
+  background-color: var(--colorInputIdle);
+  outline: 1.35px solid var(--colorBorder);
+  outline-offset: -1.35px;
+}
+
+.select-input-idle {
+  background-color: var(--colorInputIdle);
+}
+
+.select-input-active {
+  /* background-color: var(--colorInputActive); */
+}
+
+.xdesc {
+  font-size: 1.25rem;
+  padding: calc(var(--padding) + .02rem) var(--padding) var(--padding) var(--padding);
+  background-color: transparent;
+  /* border: 2px solid green; */
+}
+
+
+[class^="xpath"] {
+  box-sizing: border-box;
+  font-weight: 700;
+  padding: calc(var(--padding) + .14rem) calc(var(--padding) * 2) var(--padding) calc(var(--padding) * 2);
+  background-color: rgba(255, 255, 255, 0.065);
+  width: 1rem;
+  /* display: flex; */
+  display: none;
+  justify-content: center;
+  /* border: 2px solid blue; */
+}
+
+.slot:hover:after {
+  content: "";
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.0625);
+  left: 0;
+  /* top: -5000px; */
+  height: 2.08rem;
+  display: flex;
+  width: 100%;
+  z-index: 10;
+}
+
+/* [class$="select"]:hover, [class$="find"]:hover {
+  background-color: red;
+} */
+
+
+/* .xtag-select-active  */
+
+/* [class$="select"]:hover:after, [class$="find"]:hover:after {
+  content: "";
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.0625);
+  left: 0;
+  height: 2rem;
+  display: flex;
+  width: 100%;
+  z-index: 10;
+} */
+
+/* .slot:hover > .xtag-method {
+  background-color: rgba(0, 0, 255, 0.5);
+} */
