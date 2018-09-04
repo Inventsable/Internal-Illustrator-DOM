@@ -3,6 +3,8 @@ loadUniversalJSXLibraries();
 var csInterface = new CSInterface();
 var sysPath = csInterface.getSystemPath(SystemPath.EXTENSION);
 
+Vue.config.devtools = false;
+
 var xpath = require('xpath')
   , dom = require('xmldom').DOMParser
 var source = {
@@ -17,6 +19,8 @@ source.package = new dom().parseFromString(source.package[0].toString());
 var classes = xpath.select("//classdef", source.package);
 classes.forEach(function(v,i,a){
   getProperties(v, i);
+  if (i == (a.length - 1))
+    console.log(v);
 })
 console.log(xdom);
 
@@ -35,12 +39,18 @@ function getProperties(classdef, index) {
   if (hasDescription(classdef)) {
     reflect.desc = hasDescription(classdef)
   }
-
+  if (/classdef/gm.test(classdef.tagName))
+    reflect.kind = trimR(classdef.tagName, 3);
+  else
+    reflect.kind = classdef.tagName;
   for (var n = 0; n < classdef.attributes.length; n++)
     reflect[classdef.attributes[n].name] = classdef.attributes[n].value;
 
+  // console.log(classdef);
+
   xdomclass = new dom().parseFromString(classdef.toString());
   reflect.elements = xpath.select("//elements", xdomclass);
+  // console.log(reflect.elements);
   // console.log(reflect.elements);
   reflect.elements = reflect.elements[0];
   reflect.key = index;
@@ -51,7 +61,8 @@ function getProperties(classdef, index) {
   for (var e = 0; e < reflect.elements.properties.length; e++) {
     var obj = {
       attrList : [],
-      datatype : {}
+      datatype : {},
+      kind : reflect.elements.properties[e].tagName
     };
     if (hasDescription(reflect.elements.properties[e])) {
       obj.desc = hasDescription(reflect.elements.properties[e]);
@@ -126,8 +137,7 @@ var testDOM = {
         kind: "property",
         rwaccess: "readonly"
       },
-
-  ]
+    ]
   }
 };
 
@@ -211,42 +221,84 @@ Vue.component('selector', {
   }
 })
 
+Vue.component('pulley', {
+  template: `
+    <div class="xpull" @click="drag(100)"></div>
+  `,
+  methods: {
+    drag: function(e) {
+      console.log(this);
+      console.log(e);
+      console.log('Is dragging');
+    }
+  }
+})
 
 Vue.component('classdeflist', {
   template: `
-    <ul @click="toggleDetails">
-      <classdef v-for="classdef in omv" :key="classdef.key" :label="classdef.name" :kind="classdef.kind"></classdef>
-      <detaillist v-if="hasDetails"></detaillist>
-    </ul>
+    <div class="library">
+      <div class="libraryNote" v-for="classdef in omv">
+        <div class="clickParent" @click="toggleChild">
+          <classdef :key="classdef.key" :label="classdef.name" :kind="classdef.kind"></classdef>
+        </div>
+        <div v-for="prop in classdef.props" @click="toggleDesc(prop.name)">
+          <div v-if="hasChild">
+            <detail v-if="getDesc(prop.name)" :key="prop.key" :label="prop.name" :kind="prop.kind" :parent="prop.kind" :description="(false) ? prop.desc : false" :tabtype="classdef.kind"></detail>
+          </div>
+        </div>
+      </div>
+    </div>
   `,
+  //           <descript v-if="showDesc" v-text="prop.desc"></descript>
   methods: {
-    toggleDetails: function() {
-      console.log(this.hasDetails);
-      this.hasDetails = !this.hasDetails;
+    toggleChild: function() {
+      console.log(this.hasChild + ' is child');
+      this.hasChild = !this.hasChild;
+    },
+    toggleDesc: function(name) {
+      console.log(this.showDesc[name]);
+      if (typeof this.showDesc[name] === 'undefined') {
+        this.showDesc[name] = false;
+      }
+      this.showDesc[name] = !this.showDesc[name];
+      console.log(this.showDesc);
+    },
+    getDesc: function(name) {
+      console.log(this.showDesc[name]);
+      if (typeof this.showDesc[name] === 'undefined') {
+        this.showDesc[name] = false;
+      }
+      console.log(name + ' result is ' + this.showDesc[name]);
+      // return this.showDesc[name]
+      return true;
     }
+  },
+  computed : {
+    // testComp() {
+    //   if
+    //   return false;
+    // },
+    allDesc() {
+      var res = [];
+      for (var count = 0; count < this.omv.testClass.props.length; count++) {
+        var target = this.omv.testClass.props[count].name;
+        console.log(target + ' is name');
+        this.showDesc[target] = false;
+      }
+      console.log(this.showDesc);
+      return 'booting';
+    }
+  },
+  mounted() {
+    console.log(this.allDesc);
   },
   data() {
     return {
-      hasDetails: false,
+      showDesc: {},
+      hasChild: false,
+      thisChild: '',
+      // omv : xdom
       omv : testDOM
-      // omv : {
-      //   classdef : {
-      //     key: 0,
-      //     desc: "Dynamic object used to create data-driven graphics.",
-      //     dynamic: "true",
-      //     name: "Variable",
-      //     props : [
-      //       {attrList : ["name", "rwaccess"],
-      //       datatype : {
-      //         type : "int",
-      //         value : 1
-      //       },
-      //       desc: "The object's container",
-      //       name: "parent",
-      //       rwaccess: "readonly"}
-      //     ]
-      //   }
-      // }
     }
   }
 })
@@ -284,35 +336,68 @@ Vue.component('classdef', {
   }
 })
 
-Vue.component('detaillist', {
+Vue.component('childProps', {
   // props:['propList'],
   template: `
     <div class="xdetail">
-      <detail v-for="prop in propList" :key="prop.key" :label="prop.desc" :kind="prop.kind"></detail>
+      <slot></slot>
     </div>
   `,
   data() {
     return {
-      propList : testDOM.testClass.props
+      // propList : testDOM.testClass.props,
+      // showDesc : false,
+    }
+  },
+  computed: {
+    // propList() {
+    //   return testDOM.testClass.props[0];
+    // }
+  },
+  // methods: {
+  //   toggleDesc: function() {
+  //     console.log(this.showDesc);
+  //     this.showDesc = !this.showDesc;
+  //   }
+  // },
+})
+
+Vue.component('descript', {
+  template: `
+    <div class="xdesc">
+      <span>Hello</span>
+    </div>
+  `,
+  methods: {
+
+  },
+  data() {
+    return {
+
     }
   }
 })
 
 Vue.component('detail', {
-  props: ['kind'],
+  props: ['kind', 'label', 'description', 'parent', 'tabtype'],
   template: `
     <div class="in-slot">
       <div class="slot-prefix">
-        <div class="xtab"></div>
+        <div :class="'xtab-' + tabtype"></div>
         <div :class="'xtag-' + kind">{{kind.charAt(0)}}</div>
-        <div class="xtype" v-text="kind"></div>
-        <div class="xdesc"> placeholder </div>
+        <div class="xtype" v-text="parent"></div>
+        <div class="xdesc">{{label}}</div>
       </div>
       <div class="slot-suffix">
         <div class="xpreview"></div>
         <div class="xpath">
           <span class="adobe-icon-angleDown"></span>
         </div>
+      </div>
+      <div v-if="description" class="xdetail">
+        <div :class="'xtab-' + tabtype"></div>
+        <div :class="'xtab-' + kind"></div>
+        <div :class="'xprev-' + kind">{{description}}</div>
       </div>
     </div>
   `,

@@ -85,7 +85,7 @@ html {
 }
 
 body {
-  overflow: hidden;
+  /* overflow: scroll; */
   background-color: var(--colorPanelBG);
   color: var(--colorIcon);
 }
@@ -592,13 +592,15 @@ input[type=number]::-webkit-outer-spin-button {
 
 /* Scrollbar */
   ::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
     background: #2A2A2A;
+    width: var(--scrollW);
   }
 
   ::-webkit-scrollbar-thumb {
     background: #3E3E3E;
     border-radius: 20px;
+    width: var(--scrollW);
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -607,6 +609,9 @@ input[type=number]::-webkit-outer-spin-button {
 
   ::-webkit-scrollbar-button {
     display: none;
+  }
+  ::-webkit-scrollbar-corner {
+    background: #2A2A2A;
   }
 
   ::-webkit-scrollbar:single-button {
